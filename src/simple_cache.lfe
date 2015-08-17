@@ -1,5 +1,7 @@
 (defmodule simple_cache
-  (export (insert 2) (lookup 1) (delete 1)))
+  (export (start 0) (insert 2) (lookup 1) (delete 1)))
+
+(defun start () (application:start 'simple_cache))
 
 (defun insert (key value)
   (case (sc-store:lookup key)
