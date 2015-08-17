@@ -1,6 +1,6 @@
 * simple_cache
 The [[https://github.com/erlware/Erlang-and-OTP-in-Action-Source/tree/master/chapter_06/simple_cache][simple_cache application from Chapter 6]] of [[http://www.manning.com/logan/][Erlang and OTP in Action]],
-ported to LFE.
+ported to [[https://github.com/rvirding/lfe][LFE]].
 
 ** Introduction
 This is a fairly naïve implementation of an OTP application that provides a
