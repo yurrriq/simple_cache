@@ -1,0 +1,109 @@
+* simple_cache
+The [[https://github.com/erlware/Erlang-and-OTP-in-Action-Source/tree/master/chapter_06/simple_cache][simple_cache application from Chapter 6]] of [[http://www.manning.com/logan/][Erlang and OTP in Action]],
+ported to LFE.
+
+** Introduction
+This is a fairly naïve implementation of an OTP application that provides a
+key/value store. It's the second copmlete OTP app detailed in the book.
+
+** Installation
+Just add it to your =rebar.config= deps:
+
+#+BEGIN_SRC erlang
+  {deps, [
+    ...
+    {simple_cache, ".*",
+      {git, "git@github.com:yurrriq/simple_cache.git", "chapter_06"}}
+      ]}.
+#+END_SRC
+
+And then do the usual:
+
+#+BEGIN_SRC bash
+rebar get-deps
+rebar compile
+#+END_SRC
+
+** Usage
+*** Starting the application
+Call the typical ~start/0~ function from the application behaviour to start the
+=simple_cache= application.
+#+BEGIN_SRC lfe
+> (application:start 'simple_cache)
+ok
+#+END_SRC
+
+*** Example variables
+For convenience and brevity, we set an example ~key~ and an arbitrarily complex
+~value~ in the REPL.
+#+BEGIN_SRC lfe
+> (set key 'example)
+example
+> (set val '#(example #(string "This is an example") #(number 333)))
+#(example #(string "This is an example") #(number 333))
+#+END_SRC
+
+*** Storing a key/value pair
+To store a key/value pair in the cache, simply call
+~simple_cache:insert/2~. When successful, it returns the atom, ~true~.
+#+BEGIN_SRC lfe
+> (simple_cache:insert key val)
+true
+#+END_SRC
+
+Otherwise, you'll get an error like the following, most notably when the
+application isn't started.
+
+#+BEGIN_EXAMPLE
+exception error: badarg
+  in (: ets lookup sc-store example)
+  in (sc-store lookup 1)
+  in (simple_cache insert 2)
+#+END_EXAMPLE
+
+*** Looking up a value by key
+To look up the value associated with a key, call ~simple_cache/1~:
+#+BEGIN_SRC lfe
+> (simple_cache:lookup key)
+#(ok #(example #(string "This is an example") #(number 333)))
+#+END_SRC
+
+When the key is not found, you'll get the tuple, ~#(error not-found)~.
+#+BEGIN_SRC lfe
+> (simple_cache:lookup 'bad-key)
+#(error not-found)
+#+END_SRC
+
+*** Deleting a key/value pair
+~delete/1~ returns the atom, =ok=, even if the given key isn't stored.
+#+BEGIN_SRC lfe
+> (simple_cache:delete key)
+ok
+> (simple_cache:delete 'any-key)
+ok
+#+END_SRC
+
+If you call ~lookup/1~ with a deleted key, you'll get the tuple,
+~#(error not-found)~.
+#+BEGIN_SRC lfe
+> (simple_cache:lookup key)
+#(error not-found)
+#+END_SRC
+
+*** Default timeout
+In this version, only the default timeout is used, though a quick code change
+would allow it to be specified manually. The default timeout is =(* 60 60 24)=
+or 86400 seconds or one day. After that long, the key/value pair will be deleted
+from the cache.
+#+BEGIN_SRC lfe
+> (simple_cache:insert 'timeout "one day")
+true
+> (simple_cache:lookup 'timeout)
+#(ok "one day")
+#+END_SRC
+
+Wait a day...
+#+BEGIN_SRC lfe
+> (simple_cache:lookup 'timeout)
+#(error not-found)
+#+END_SRC
