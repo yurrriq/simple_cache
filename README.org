@@ -25,6 +25,7 @@ rebar compile
 #+END_SRC
 
 ** Usage
+[[./resources/images/example.png]]
 *** Starting the application
 Call the typical ~start/0~ function from the application behaviour to start the
 =simple_cache= application.
