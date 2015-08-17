@@ -1,4 +1,4 @@
-(defmodule simple_cache
+(defmodule simple-cache
   (export (start 0) (insert 2) (lookup 1) (delete 1)))
 
 (defun start () (application:start 'simple_cache))
