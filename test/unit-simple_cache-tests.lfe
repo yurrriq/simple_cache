@@ -1,18 +1,10 @@
 (defmodule unit-simple_cache-tests
   (behaviour ltest-unit)
-  (export all)
-  (import
-    (from ltest
-      (check-failed-assert 2)
-      (check-wrong-assert-exception 2))))
+  (export all))
 
+(include-lib "eunit/include/eunit.hrl")
 (include-lib "ltest/include/ltest-macros.lfe")
 
 (deftest code-change
-  (is-equal
-    ;; XXX This unit test fails by default -- fix it!
-    #(ok "data")
-    (: simple_cache-server code_change
-       '"old version"
-       '"state"
-       '"extra")))
+  (is-equal #(ok "state")
+            (sc-element:code_change "old version" "state""extra")))

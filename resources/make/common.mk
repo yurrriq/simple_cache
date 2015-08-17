@@ -37,7 +37,7 @@ get-version:
 	@PATH=$(SCRIPT_PATH) $(LFETOOL) info version
 	@echo "Erlang/OTP, LFE, & library versions:"
 	@ERL_LIBS=$(ERL_LIBS) PATH=$(SCRIPT_PATH) erl \
-	-eval "lfe_io:format(\"~p~n\",['simple_cache-util':'get-versions'()])." \
+	-eval "lfe_io:format(\"~p~n\",['sc-util':'get-versions'()])." \
 	-noshell -s erlang halt
 
 get-deps:

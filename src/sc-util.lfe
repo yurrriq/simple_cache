@@ -1,4 +1,4 @@
-(defmodule simple_cache-util
+(defmodule sc-util
   (export all))
 
 (defun get-version ()
