@@ -25,9 +25,13 @@ rebar compile
 #+END_SRC
 
 ** Usage
-[[./resources/images/example.png]]
 *** Starting the application
-Call the typical ~start/0~ function from the application behaviour to start the
+Start the app from your terminal:
+#+BEGIN_SRC bash
+lfe -pa ebin -s simple-cache
+#+END_SRC
+
+... or call the typical ~start/0~ function from the application behaviour to start the
 =simple_cache= application.
 #+BEGIN_SRC lfe
 > (application:start 'simple_cache)
