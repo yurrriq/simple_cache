@@ -30,8 +30,13 @@ Start the app from your terminal:
 $ lfe -pa ebin -s simple-cache
 #+END_SRC
 
-... or call the typical ~start/0~ function from the application behaviour to start the
-=simple_cache= application.
+... or call ~start/0~
+#+BEGIN_SRC lfe
+> (simple-cache:start)
+ok
+#+END_SRC
+
+... or call ~application:start/1~ to start the =simple_cache= application.
 #+BEGIN_SRC lfe
 > (application:start 'simple_cache)
 ok
@@ -49,9 +54,9 @@ example
 
 *** Storing a key/value pair
 To store a key/value pair in the cache, simply call
-~simple_cache:insert/2~. When successful, it returns the atom, ~true~.
+~simple-cache:insert/2~. When successful, it returns the atom, ~true~.
 #+BEGIN_SRC lfe
-> (simple_cache:insert key val)
+> (simple-cache:insert key val)
 true
 #+END_SRC
 
@@ -62,35 +67,50 @@ application isn't started.
 exception error: badarg
   in (: ets lookup sc-store example)
   in (sc-store lookup 1)
-  in (simple_cache insert 2)
+  in (simple-cache insert 2)
 #+END_EXAMPLE
 
 *** Looking up a value by key
-To look up the value associated with a key, call ~simple_cache/1~:
+To look up the value associated with a key, call ~lookup/1~:
 #+BEGIN_SRC lfe
-> (simple_cache:lookup key)
+> (simple-cache:lookup key)
 #(ok #(example #(string "This is an example") #(number 333)))
 #+END_SRC
 
 When the key is not found, you'll get the tuple, ~#(error not-found)~.
 #+BEGIN_SRC lfe
-> (simple_cache:lookup 'bad-key)
+> (simple-cache:lookup 'bad-key)
+#(error not-found)
+#+END_SRC
+
+**** Note
+~simple-cache:lookup/1~ will also return ~#(error not-found)~ when the
+application isn't running.
+#+BEGIN_SRC lfe
+> (application:stop 'simple_cache)
+
+=INFO REPORT==== 18-Aug-2015::00:09:28 ===
+    application: simple_cache
+    exited: stopped
+    type: temporary
+ok
+> (simple-cache:lookup key)
 #(error not-found)
 #+END_SRC
 
 *** Deleting a key/value pair
 ~delete/1~ returns the atom, =ok=, even if the given key isn't stored.
 #+BEGIN_SRC lfe
-> (simple_cache:delete key)
+> (simple-cache:delete key)
 ok
-> (simple_cache:delete 'any-key)
+> (simple-cache:delete 'any-key)
 ok
 #+END_SRC
 
 If you call ~lookup/1~ with a deleted key, you'll get the tuple,
 ~#(error not-found)~.
 #+BEGIN_SRC lfe
-> (simple_cache:lookup key)
+> (simple-cache:lookup key)
 #(error not-found)
 #+END_SRC
 
@@ -100,14 +120,14 @@ would allow it to be specified manually. The default timeout is =(* 60 60 24)=
 or 86400 seconds or one day. After that long, the key/value pair will be deleted
 from the cache.
 #+BEGIN_SRC lfe
-> (simple_cache:insert 'timeout "one day")
+> (simple-cache:insert 'timeout "one day")
 true
-> (simple_cache:lookup 'timeout)
+> (simple-cache:lookup 'timeout)
 #(ok "one day")
 #+END_SRC
 
 Wait a day...
 #+BEGIN_SRC lfe
-> (simple_cache:lookup 'timeout)
+> (simple-cache:lookup 'timeout)
 #(error not-found)
 #+END_SRC
