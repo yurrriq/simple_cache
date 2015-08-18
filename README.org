@@ -20,15 +20,14 @@ Just add it to your =rebar.config= deps:
 And then do the usual:
 
 #+BEGIN_SRC bash
-rebar get-deps
-rebar compile
+$ rebar get-deps compile
 #+END_SRC
 
 ** Usage
 *** Starting the application
 Start the app from your terminal:
 #+BEGIN_SRC bash
-lfe -pa ebin -s simple-cache
+$ lfe -pa ebin -s simple-cache
 #+END_SRC
 
 ... or call the typical ~start/0~ function from the application behaviour to start the
