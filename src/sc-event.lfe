@@ -6,8 +6,8 @@
           (replace 2)
           (delete 1))
   ;; gen_event wrappers
-  (export (add_handler 2)
-          (delete_handler 2)))
+  (export (add-handler 2)
+          (delete-handler 2)))
 
 (include-lib "include/sc-macros.lfe")
 
@@ -39,8 +39,8 @@
 ;;; gen_event wrappers
 ;;;===================================================================
 
-(defun add_handler (handler args)
+(defun add-handler (handler args)
   (gen_event:add_handler (server-name) handler args))
 
-(defun delete_handler (handler args)
+(defun delete-handler (handler args)
   (gen_event:delete_handler (server-name) handler args))

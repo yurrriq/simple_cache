@@ -1,8 +1,8 @@
 (defmodule sc-event-logger
   (behaviour gen_event)
   ;; API
-  (export (add_handler 0)
-          (delete_handler 0))
+  (export (add-handler 0)
+          (delete-handler 0))
   ;; gen_event callbacks
   (export (init 1)
           (handle_event 2)
@@ -18,9 +18,9 @@
 ;;; API
 ;;;===================================================================
 
-(defun add_handler () (sc-event:add_handler (MODULE) '()))
+(defun add-handler () (sc-event:add-handler (MODULE) '()))
 
-(defun delete_handler () (sc-event:delete_handler (MODULE) '()))
+(defun delete-handler () (sc-event:delete-handler (MODULE) '()))
 
 
 ;;;===================================================================
