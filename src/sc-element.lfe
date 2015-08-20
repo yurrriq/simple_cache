@@ -29,7 +29,7 @@
 (defun start_link (value lease-time)
   (gen_server:start_link (MODULE) `(,value ,lease-time) '()))
 
-(defun create (value lease-time) (sc-sup:start_child value lease-time))
+(defun create (value lease-time) (sc-element-sup:start_child value lease-time))
 
 (defun create (value) (create value (default-lease-time)))
 
