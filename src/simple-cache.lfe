@@ -1,7 +1,17 @@
 (defmodule simple-cache
-  (export (start 0) (insert 2) (lookup 1) (delete 1)))
+  (export (start 0) (start 1) (insert 2) (lookup 1) (delete 1)))
 
 (defun start () (application:start 'simple_cache))
+
+(defun start
+  ([options] (when (is_list options))
+   (start)
+   (lists:foreach
+     (lambda (option)
+       (case option
+         ('event-logger (sc-event-logger:add-handler))
+         (_       'noop)))
+     options)))
 
 (defun insert (key value)
   (case (sc-store:lookup key)
