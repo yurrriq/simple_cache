@@ -1,0 +1,173 @@
+#+TITLE: A simple key/value store
+#+AUTHOR: Eric Bailey
+
+* ~sc-element~
+  :PROPERTIES:
+  :tangle:   src/sc-element.lfe
+  :END:
+
+#+BEGIN_SRC lfe :padline no
+(defmodule sc-element
+  (behaviour gen_server)
+  ;; API
+  (export (start_link 2)
+          (create 2)
+          (create 1)
+          (fetch 1)
+          (replace 2)
+          (delete 1))
+  ;; gen_server callbacks
+  (export (init 1)
+          (handle_call 3)
+          (handle_cast 2)
+          (handle_info 2)
+          (terminate 2)
+          (code_change 3)))
+#+END_SRC
+
+#+BEGIN_SRC lfe
+(defun server-name () 'sc-element)
+#+END_SRC
+
+We define the ~default-lease-time~ as one day in seconds, i.e. =60= (seconds in
+a minute) times =60= (minutes in an hour) times =24= (hours in a day).
+#+BEGIN_SRC lfe
+(defun default-lease-time () (* 60 60 24))
+#+END_SRC
+
+To manage the state of stored values and their lease times, we define the
+~state~ record, which contains the self-descriptive keys, ~value~, ~lease-time~
+and ~start-time~.
+#+BEGIN_SRC lfe
+(defrecord state value lease-time start-time)
+#+END_SRC
+
+** API
+#+BEGIN_SRC lfe :exports none
+;;; ============================================================================
+;;; ===                               API                                    ===
+;;; ============================================================================
+#+END_SRC
+
+*** ~start_link/2~
+We define our own ~start_link/2~ to hide mask the ~gen_server:start_link/3~
+call.
+
+#+BEGIN_SRC lfe
+(defun start_link (value lease-time)
+  (gen_server:start_link (MODULE) `(,value ,lease-time) '()))
+#+END_SRC
+
+| Argument     | Description                                             |
+|--------------+---------------------------------------------------------|
+|              | <l>                                                     |
+| ~value~      | Any LFE term to be stored.                              |
+| ~lease-time~ | The number of seconds this element should be available. |
+
+Later on, this will get called by ~sc-element-sup:start_child/1~, which is
+called by ~sc-element:create/2~.
+
+*** ~create/2~ and ~create/1~
+In order to create a new element, we at least need a value. Along with a value,
+~create/2~ takes a lease time. With that, we call
+~sc-element-sup:start_child/2~, which we'll implement later.
+#+BEGIN_SRC lfe
+(defun create  (value lease-time) (sc-element-sup:start_child value lease-time))
+#+END_SRC
+
+Under the hood, ~create/1~ simply calls ~create/2~ with ~(default-lease-time)~
+as the lease time.
+#+BEGIN_SRC lfe
+(defun create  (value)            (create value (default-lease-time)))
+#+END_SRC
+
+*** ~fetch/1~, ~replace/2~ and ~delete/1~
+These three API functions are simply convenient wrappers around the appropriate
+~gen_server:call/2~ and ~gen_server:cast/2~ calls.
+
+#+BEGIN_SRC lfe
+(defun fetch   (pid)              (gen_server:call pid 'fetch))
+
+(defun replace (pid value)        (gen_server:cast pid `#(replace ,value)))
+
+(defun delete  (pid)              (gen_server:cast pid 'delete))
+#+END_SRC
+
+** ~gen_server~ callbacks
+#+BEGIN_SRC lfe :exports none
+;;; ============================================================================
+;;; ===                       gen_server callbacks                           ===
+;;; ============================================================================
+#+END_SRC
+
+*** TODO ~init/1~
+#+BEGIN_SRC lfe
+(defun init
+  ([`(,value ,lease-time)]
+   (let* ((now        (calendar:local_time))
+          (start-time (calendar:datetime_to_gregorian_seconds now)))
+     `#(ok
+        ,(make-state value      value
+                     lease-time lease-time
+                     start-time start-time)
+        ,(time-left start-time lease-time)))))
+#+END_SRC
+
+*** TODO ~handle_call/3~
+#+BEGIN_SRC lfe
+(defun handle_call
+  (['fetch _from state]
+   (let* (((match-state value      value
+                        lease-time lease-time
+                        start-time start-time) state)
+          (time-left (time-left start-time lease-time)))
+     `#(reply #(ok ,value) ,state ,time-left))))
+#+END_SRC
+
+*** TODO ~handle_cast/2~
+#+BEGIN_SRC lfe
+(defun handle_cast
+  ([`#(replace ,value) state]
+   (let* (((match-state lease-time lease-time
+                        start-time start-time) state)
+          (time-left (time-left start-time lease-time)))
+     `#(noreply ,(set-state-value state value) ,time-left)))
+  (['delete state] `#(stop normal ,state)))
+#+END_SRC
+
+*** TODO ~handle_info/2~
+#+BEGIN_SRC lfe
+(defun handle_info (['timeout state] `#(stop normal ,state)))
+#+END_SRC
+
+*** TODO ~terminate/2~
+#+BEGIN_SRC lfe
+(defun terminate (_reason _state)
+  (sc-store:delete (self))
+  'ok)
+#+END_SRC
+
+*** TODO ~code_change/3~
+#+BEGIN_SRC lfe
+(defun code_change (_old-version state _extra) `#(ok ,state))
+#+END_SRC
+
+** TODO Internal functions
+#+BEGIN_SRC lfe :exports none
+;;; ============================================================================
+;;; ===                        Internal functions                            ===
+;;; ============================================================================
+#+END_SRC
+
+*** TODO ~time-left/2~
+#+BEGIN_SRC lfe
+(defun time-left
+  ([_start-time 'infinity] 'infinity)
+  ([start-time lease-time]
+   (let* ((now          (calendar:local_time))
+          (current-time (calendar:datetime_to_gregorian_seconds now))
+          (time-elapsed (- current-time start-time)))
+     (case (- lease-time time-elapsed)
+       (time (when (=< time 0)) 0)
+       (time                    (* time 1000))))))
+#+END_SRC
