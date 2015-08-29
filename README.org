@@ -1,10 +1,10 @@
 * simple_cache
-The [[https://github.com/erlware/Erlang-and-OTP-in-Action-Source/tree/master/chapter_06/simple_cache][simple_cache application from Chapter 6]] of [[http://www.manning.com/logan/][Erlang and OTP in Action]],
+The [[https://github.com/erlware/Erlang-and-OTP-in-Action-Source/tree/master/chapter_07/simple_cache][simple_cache application from Chapter 7]] of [[http://www.manning.com/logan/][Erlang and OTP in Action]],
 ported to [[https://github.com/rvirding/lfe][LFE]].
 
 ** Introduction
-This is a fairly naïve implementation of an OTP application that provides a
-key/value store. It's the second copmlete OTP app detailed in the book.
+This OTP application that provides a key/value store is based on [[https://github.com/yurrriq/simple_cache/tree/chapter_06][the Chapter 6
+version]], but features an added =gen-event=-based logging system.
 
 ** Installation
 Just add it to your =rebar.config= deps:
@@ -13,7 +13,7 @@ Just add it to your =rebar.config= deps:
   {deps, [
     ...
     {simple_cache, ".*",
-      {git, "git@github.com:yurrriq/simple_cache.git", "chapter_06"}}
+      {git, "git@github.com:yurrriq/simple_cache.git", "chapter_07"}}
       ]}.
 #+END_SRC
 
@@ -27,18 +27,30 @@ $ rebar get-deps compile
 *** Starting the application
 Start the app from your terminal:
 #+BEGIN_SRC bash
-$ lfe -pa ebin -s simple-cache
+$ lfe -pa ebin -s simple-cache start event-logger
 #+END_SRC
 
-... or call ~start/0~
+... or call ~start/1~
 #+BEGIN_SRC lfe
-> (simple-cache:start)
+> (simple-cache:start '(event-logger))
 ok
 #+END_SRC
 
 ... or call ~application:start/1~ to start the =simple_cache= application.
 #+BEGIN_SRC lfe
 > (application:start 'simple_cache)
+ok
+#+END_SRC
+
+... and then ~sc-event-logger:add-handler/0~ to start the event logger.
+#+BEGIN_SRC lfe
+> (sc-event-logger:add-handler)
+ok
+#+END_SRC
+
+To stop the event logger, call ~sc-event-logger:delete-handler/0~.
+#+BEGIN_SRC lfe
+> (sc-event-logger:delete-handler)
 ok
 #+END_SRC
 
