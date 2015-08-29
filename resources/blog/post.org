@@ -60,7 +60,6 @@ call.
 
 | Argument     | Description                                             |
 |--------------+---------------------------------------------------------|
-|              | <l>                                                     |
 | ~value~      | Any LFE term to be stored.                              |
 | ~lease-time~ | The number of seconds this element should be available. |
 
