@@ -1,5 +1,15 @@
-#+TITLE: A simple key/value store
-#+AUTHOR: Eric Bailey
+#+OPTIONS: toc:nil
+#+BEGIN_HTML
+---
+layout: post
+title: "A simple key/value store"
+description: "A LFE port based on Erlang and OTP in Action"
+category: tutorials
+tags: [lfe,erlang,otp,ports,apps]
+author: Eric Bailey
+---
+{% include JB/setup %}
+#+END_HTML
 
 * ~sc-element~
   :PROPERTIES:
