@@ -3,8 +3,8 @@ The [[https://github.com/erlware/Erlang-and-OTP-in-Action-Source/tree/master/cha
 ported to [[https://github.com/rvirding/lfe][LFE]].
 
 ** Introduction
-This OTP application that provides a key/value store is based on the [[https://github.com/yurrriq/simple_cache/tree/chapter_06][chapter_06]]
-version, but features an added =gen_event=-based logging system.
+This OTP application provides a key/value store and is based on
+the [[https://github.com/yurrriq/simple_cache/tree/chapter_06][chapter_06]] version, but features an added =gen_event=-based logging system.
 
 ** Installation
 Just add it to your =rebar.config= deps:
