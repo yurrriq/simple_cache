@@ -1,4 +1,4 @@
-(defmodule resource_discovery
+(defmodule rd-server
   (behaviour gen_server)
   ;; API
   (export (start_link 0)
@@ -27,7 +27,7 @@
 ;;;===================================================================
 
 (defun start_link ()
-  (gen_server:start_link `#(local ,(SERVER) (MODULE) '() '())))
+  (gen_server:start_link `#(local ,(SERVER)) (MODULE) '() '()))
 
 (defun add-local-resource (type resource)
   (gen_server:cast (SERVER) `#(add-local-resource #(,type ,resource))))
