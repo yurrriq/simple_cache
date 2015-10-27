@@ -5,7 +5,7 @@
 (defun start (_type _args)
   (sc-store:init)
   (case (sc-sup:start_link)
-    (`#(ok ,pid) `#(ok ,pid))
+    (`#(ok ,pid) `#(ok    ,pid))
     (other       `#(error ,other))))
 
-(defun stop (state) 'ok)
+(defun stop (_state) 'ok)

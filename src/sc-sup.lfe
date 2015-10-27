@@ -22,10 +22,10 @@
 
 (defun init
   (['()]
-   (let* ((element-sup      `#(sc-element-sup #(sc-element-sup start_link ())
-                               permanent 2000 supervisor (sc-element)))
-          (event-manager    `#(sc-event #(sc-event start_link ())
-                               permanent 2000 worker (sc-event)))
+   (let* ((element-sup     '#(sc-element-sup #(sc-element-sup start_link [])
+                              permanent 2000 supervisor [sc-element]))
+          (event-manager    #(sc-event #(sc-event start_link [])
+                              permanent 2000 worker [sc-event]))
           (children         `(,element-sup ,event-manager))
           (restart-strategy #(one_for_one 4 3600)))
      `#(ok #(,restart-strategy ,children)))))
