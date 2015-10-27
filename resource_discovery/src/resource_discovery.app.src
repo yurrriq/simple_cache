@@ -1,0 +1,8 @@
+%% -*- erlang -*-
+{application, resource_discovery,
+ [{description,  "A simple resource discovery system"},
+  {vsn,          "0.1.0"},
+  {modules,      ['resource-discovery', 'rd-sup', 'rd-app', 'rd-server']},
+  {registered,   ['rd-sup', 'rd-server']},
+  {applications, [kernel, stdlib]},
+  {mod,          {'rd-app', []}}]}.
