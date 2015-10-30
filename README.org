@@ -25,37 +25,31 @@ $ rebar get-deps compile
 
 ** Usage
 *** Setting up contact nodes
-This version now requires contact nodes to set up clustering.
+T.his version now requires contact nodes to set up clustering.
 The simplest way is to start to contact nodes locally.
 
 In one shell:
 #+BEGIN_SRC bash
 $ lfe -sname contact1@localhost
 #+END_SRC
-In another:
+.. and in another:
 #+BEGIN_SRC bash
 $ lfe -sname contact2@localhost
+#+END_SRC
+
+... or, for convenience:
+#+BEGIN_SRC bash
+$ make contact-nodes
 #+END_SRC
 
 *** Starting the application
 Start the app from your terminal:
 #+BEGIN_SRC bash
 $ lfe -sname mynode@localhost \
-      -pa ./simple_cache/ebin \
-      -pa ./resource_discovery/ebin
-#+END_SRC
-
-Then ensure the necessary applications (listed under ~applications~ in
-[[file:simple_cache/src/simple_cache.app.src][simple_cache.app.src]]) are started.
-#+BEGIN_SRC lfe
-(mynode@localhost)> (application:start 'sasl)
-ok
-(mynode@localhost)> (mnesia:start)
-ok
-(mynode@localhost)> (resource-discovery:start)
-ok
-(mynode@localhost)> (simple-cache:start)
-ok
+      -pa    ./simple_cache/ebin \
+      -pa    ./resource_discovery/ebin \
+      -boot  ./simple_cache \
+      config sys
 #+END_SRC
 
 To stop the event logger, call ~sc-event-logger:delete-handler/0~.
