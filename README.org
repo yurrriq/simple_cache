@@ -1,6 +1,6 @@
 * simple_cache
-The [[https://github.com/erlware/Erlang-and-OTP-in-Action-Source/tree/master/chapter_07/simple_cache][simple_cache application from Chapter 7]] of [[http://www.manning.com/logan/][Erlang and OTP in Action]],
-ported to [[https://github.com/rvirding/lfe][LFE]].
+The distributed, [[https://github.com/erlware/Erlang-and-OTP-in-Action-Source/tree/master/chapter_09/resource_discovery][resource-aware]] cache application from [[https://github.com/erlware/Erlang-and-OTP-in-Action-Source/tree/master/chapter_09/simple_cache][Chapter 9]] of
+[[http://www.manning.com/logan/][Erlang and OTP in Action]], ported to [[https://github.com/rvirding/lfe][LFE]].
 
 ** Introduction
 This OTP application provides a key/value store and is based on
@@ -13,7 +13,7 @@ Just add it to your =rebar.config= deps:
   {deps, [
     ...
     {simple_cache, ".*",
-      {git, "git@github.com:yurrriq/simple_cache.git", "chapter_07"}}
+      {git, "git@github.com:yurrriq/simple_cache.git", "chapter_09"}}
       ]}.
 #+END_SRC
 
@@ -24,27 +24,37 @@ $ rebar get-deps compile
 #+END_SRC
 
 ** Usage
+*** Setting up contact nodes
+This version now requires contact nodes to set up clustering.
+The simplest way is to start to contact nodes locally.
+
+In one shell:
+#+BEGIN_SRC bash
+$ lfe -sname contact1@localhost
+#+END_SRC
+In another:
+#+BEGIN_SRC bash
+$ lfe -sname contact2@localhost
+#+END_SRC
+
 *** Starting the application
 Start the app from your terminal:
 #+BEGIN_SRC bash
-$ lfe -pa ebin -s simple-cache start event-logger
+$ lfe -sname mynode@localhost \
+      -pa ./simple_cache/ebin \
+      -pa ./resource_discovery/ebin
 #+END_SRC
 
-... or call ~start/1~
+Then ensure the necessary applications (listed under ~applications~ in
+[[file:simple_cache/src/simple_cache.app.src][simple_cache.app.src]]) are started.
 #+BEGIN_SRC lfe
-> (simple-cache:start '(event-logger))
+(mynode@localhost)> (application:start 'sasl)
 ok
-#+END_SRC
-
-... or call ~application:start/1~ to start the =simple_cache= application.
-#+BEGIN_SRC lfe
-> (application:start 'simple_cache)
+(mynode@localhost)> (mnesia:start)
 ok
-#+END_SRC
-
-... and then ~sc-event-logger:add-handler/0~ to start the event logger.
-#+BEGIN_SRC lfe
-> (sc-event-logger:add-handler)
+(mynode@localhost)> (resource-discovery:start)
+ok
+(mynode@localhost)> (simple-cache:start)
 ok
 #+END_SRC
 
@@ -72,15 +82,7 @@ To store a key/value pair in the cache, simply call
 true
 #+END_SRC
 
-Otherwise, you'll get an error like the following, most notably when the
-application isn't started.
-
-#+BEGIN_EXAMPLE
-exception error: badarg
-  in (: ets lookup sc-store example)
-  in (sc-store lookup 1)
-  in (simple-cache insert 2)
-#+END_EXAMPLE
+Otherwise, you'll get an error, most notably when the application isn't started.
 
 *** Looking up a value by key
 To look up the value associated with a key, call ~lookup/1~:
