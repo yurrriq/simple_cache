@@ -1,4 +1,4 @@
-* simple_cache
+* simple​_cache
   :PROPERTIES:
   :padline:  no
   :END:
