@@ -93,9 +93,8 @@
     ('error (dict:store type `(,resource) dict))))
 
 (defun resources-for-types (types resources)
-  (lists:foldl
-    (lambda (type acc)
-      (case (dict:find type resources)
-        (`#(ok ,lst) (++ (lists:map (lambda (r) `#(,type ,r)) lst) acc))
-        ('error      acc)))
-    types))
+  (let ((f (lambda (type acc)
+             (case (dict:find type resources)
+               (`#(ok ,lst) (++ (lists:map (lambda (r) `#(,type ,r)) lst) acc))
+               ('error      acc)))))
+    (lists:foldl f '() types)))
