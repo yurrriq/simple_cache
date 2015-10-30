@@ -5,7 +5,7 @@
   ;; Supervisor callbacks
   (export (init 1)))
 
-(defun server-name () (MODULE))
+(defun SERVER () (MODULE))
 
 
 ;;;===================================================================
@@ -13,19 +13,27 @@
 ;;;===================================================================
 
 (defun start_link ()
-  (supervisor:start_link `#(local ,(server-name)) (MODULE) '()))
+  (supervisor:start_link `#(local ,(SERVER)) (MODULE) '()))
 
 
 ;;;===================================================================
-;;; Supervisor callbakcs
+;;; Supervisor callbacks
 ;;;===================================================================
 
 (defun init
   (['()]
-   (let* ((element-sup     '#(sc-element-sup #(sc-element-sup start_link [])
-                              permanent 2000 supervisor [sc-element]))
-          (event-manager    #(sc-event #(sc-event start_link [])
-                              permanent 2000 worker [sc-event]))
-          (children         `(,element-sup ,event-manager))
-          (restart-strategy #(one_for_one 4 3600)))
-     `#(ok #(,restart-strategy ,children)))))
+   '#(ok #(#m(strategy  one_for_one
+              intensity 4
+              period    3600)
+             [#m(id       sc-element-sup
+                 start    #(sc-element-sup start_link [])
+                 restart  permanent
+                 shutdown 2000
+                 type     supervisor
+                 modules  [sc-element])
+              #m(id       sc-event
+                 start    #(sc-event start_link [])
+                 restart  permanent
+                 shutdown 2000
+                 type     worker
+                 modules  [sc-event])]))))
