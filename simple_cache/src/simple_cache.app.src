@@ -8,6 +8,6 @@
                   'sc-element-sup', 'sc-element',
                   'sc-store',
                   'sc-event', 'sc-event-logger']},
-  {registered,   ['sc-sup', 'sc-element-sup' 'sc-event']},
+  {registered,   ['sc-sup', 'sc-element-sup', 'sc-event']},
   {applications, [kernel, sasl, stdlib, mnesia, resource_discovery]},
   {mod,          {'sc-app', []}}]}.
