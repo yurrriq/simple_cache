@@ -1,6 +1,28 @@
 * simple_cache
+  :PROPERTIES:
+  :padline:  no
+  :END:
 The distributed, [[https://github.com/erlware/Erlang-and-OTP-in-Action-Source/tree/master/chapter_09/resource_discovery][resource-aware]] cache application from [[https://github.com/erlware/Erlang-and-OTP-in-Action-Source/tree/master/chapter_09/simple_cache][Chapter 9]] of
 [[http://www.manning.com/logan/][Erlang and OTP in Action]], ported to [[https://github.com/rvirding/lfe][LFE]].
+
+#+BEGIN_SRC erlang :tangle simple_cache.rel
+{release,
+ {"simple_cache", "0.1.0"},
+ {erts,           "7.1"},
+ [{kernel,             "4.1"},
+  {stdlib,             "2.6"},
+  {sasl,               "2.6"},
+  {mnesia,             "4.13.1"},
+  {resource_discovery, "0.1.0"},
+  {simple_cache,       "0.3.0"}]}.
+#+END_SRC
+
+#+BEGIN_SRC erlang :tangle sys.config
+[{sasl,
+  [{sasl_error_logger, {file, "/tmp/simple_cache.sasl_log"}}]},
+ {simple_cache,
+  [{contact_nodes, ['contact1@localhost', 'contact2@localhost']}]}].
+#+END_SRC
 
 ** Introduction
 This OTP application provides a key/value store and is based on
@@ -138,4 +160,25 @@ Wait a day...
 #+BEGIN_SRC lfe
 > (simple-cache:lookup 'timeout)
 #(error not-found)
+#+END_SRC
+** Scripts
+#+BEGIN_SRC sh :exports none :tangle bin/install.sh
+#!/bin/sh
+# rename this file to "install" and set the executable flag,
+# then copy it into the bin directory of your release package
+# (update the erts version number below to match your release)
+ROOT=`pwd`
+DIR=./erts-7.1/bin
+sed s:%FINAL_ROOTDIR%:$ROOT: $DIR/erl.src > $DIR/erl
+#+END_SRC
+#+BEGIN_SRC sh :exports none :tangle bin/simple_cache.sh
+#!/bin/sh
+# rename this file to "simple_cache" and set the executable flag,
+# then copy it into the bin directory of your release package
+# (update the erts version number below to match your release)
+./erts-7.1/bin/erl \
+    -sname cache \
+    -boot ./releases/0.1.0/start \
+    -config ./releases/0.1.0/sys \
+    -detached
 #+END_SRC
