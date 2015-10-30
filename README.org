@@ -24,6 +24,33 @@ The distributed, [[https://github.com/erlware/Erlang-and-OTP-in-Action-Source/tr
   [{contact_nodes, ['contact1@localhost', 'contact2@localhost']}]}].
 #+END_SRC
 
+#+BEGIN_SRC erlang :tangle resource_discovery/src/resource_discovery.app.src
+%% -*- erlang -*-
+{application, resource_discovery,
+ [{description,  "A simple resource discovery system"},
+  {vsn,          "0.1.0"},
+  {modules,      ['resource-discovery', 'rd-sup', 'rd-app', 'rd-server']},
+  {registered,   ['rd-sup', 'rd-server']},
+  {applications, [kernel, stdlib]},
+  {mod,          {'rd-app', []}}]}.
+#+END_SRC
+
+#+BEGIN_SRC erlang simple_cache/src/simple_cache.app.src
+%% -*- erlang -*-
+{application,    simple_cache,
+ [{description,  "A simple caching system"},
+  {vsn,          "0.3.0"},
+  {modules,      ['simple-cache',
+                  'sc-sup',
+                  'sc-app',
+                  'sc-element-sup', 'sc-element',
+                  'sc-store',
+                  'sc-event', 'sc-event-logger']},
+  {registered,   ['sc-sup', 'sc-element-sup', 'sc-event']},
+  {applications, [kernel, sasl, stdlib, mnesia, resource_discovery]},
+  {mod,          {'sc-app', []}}]}.
+#+END_SRC
+
 ** Introduction
 This OTP application provides a key/value store and is based on
 the [[https://github.com/yurrriq/simple_cache/tree/chapter_06][chapter_06]] version, but features an added =gen_event=-based logging system.
