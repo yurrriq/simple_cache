@@ -62,7 +62,7 @@ Just add it to your =rebar.config= deps:
   {deps, [
     ...
     {simple_cache, ".*",
-      {git, "git@github.com:yurrriq/simple_cache.git", "chapter_09"}}
+      {git, "git@github.com:yurrriq/simple_cache.git", "chapter_10"}}
       ]}.
 #+END_SRC
 
