@@ -61,15 +61,15 @@
           (types* `(,type . ,(lists:delete type types))))
      `#(noreply ,(set-state-target-resource-types state types*) state)))
   ([`#(trade-resources #(,reply-to ,remotes))
-    (= state (match-state local-resource-tuples locals
-                          target-resource-types types
+    (= state (match-state target-resource-types types
+                          local-resource-tuples locals
                           found-resource-tuples found))]
    (let ((found* (add-resources (resources-for-types types remotes) found)))
      (case reply-to
        ('noreply 'ok)
        (_        (gen_server:cast `#(,(SERVER) ,reply-to)
                                   `#(trade-resources #(noreply ,locals)))))
-     `#(noreply (set-state-found-resource-tuples found*)))))
+     `#(noreply ,(set-state-found-resource-tuples state found*)))))
 
 (defun handle_info ([(= 'ok _info) state] `#(noreply ,state)))
 
