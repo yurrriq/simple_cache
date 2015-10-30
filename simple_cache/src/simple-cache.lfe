@@ -1,5 +1,5 @@
 (defmodule simple-cache
-  (export (start 0) (start 1)
+  (export (start 0)
           (insert 2)
           (lookup 1)
           (delete 1)))
@@ -7,18 +7,6 @@
 (defun start ()
   "Start the simple_cache application."
   (application:start 'simple_cache))
-
-(defun start
-  "Call start/0 and parse any given `options'. Currently the only the option is
-event-logger, which enables event logging."
-  ([options] (when (is_list options))
-   (start)
-   (lists:foreach
-     (lambda (option)
-       (case option
-         ('event-logger (sc-event-logger:add-handler))
-         (_       'noop)))
-     options)))
 
 (defun insert (key value)
   "Given a `key' and a `value', create or replace the corresponding element
