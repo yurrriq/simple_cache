@@ -60,6 +60,15 @@
    (let* ((types (state-target-resource-types state))
           (types* `(,type . ,(lists:delete type types))))
      `#(noreply ,(set-state-target-resource-types state types*) state)))
+  (['trade-resources state]
+   (let* ((resources (state-local-resource-tuples state))
+          (all-nodes `(,(node) . ,(nodes))))
+     (lists:foreach
+      (lambda (node)
+        (gen_server:cast `#(,(SERVER) ,node)
+                         `#(trade-resources #(,(node) ,resources))))
+      all-nodes))
+   `#(noreply ,state))
   ([`#(trade-resources #(,reply-to ,remotes))
     (= state (match-state target-resource-types types
                           local-resource-tuples locals
