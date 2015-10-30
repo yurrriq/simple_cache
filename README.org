@@ -1,4 +1,4 @@
-* simple_cache
+* simple​_cache
 The =simple_cache= OTP application from [[http://www.manning.com/logan/][Erlang and OTP in Action]], ported to [[https://github.com/rvirding/lfe][LFE]].
 
 ** [[https://github.com/yurrriq/simple_cache/tree/chapter_06][Chapter 6]]
@@ -8,3 +8,11 @@ See also: [[https://github.com/erlware/Erlang-and-OTP-in-Action-Source/tree/mast
 ** [[https://github.com/yurrriq/simple_cache/tree/chapter_07][Chapter 7]]
 Same as [[https://github.com/yurrriq/simple_cache/tree/chapter_06][Chapter 6]], but with an added =gen_event=-based logging system.
 See also: [[https://github.com/erlware/Erlang-and-OTP-in-Action-Source/tree/master/chapter_07/simple_cache][Erlang version]]
+
+** [[https://github.com/yurrriq/simple_cache/tree/chapter_09][Chapter 9]]
+Same as [[https://github.com/yurrriq/simple_cache/tree/chapter_07][Chapter 7]], but distributed and using [[http://www.erlang.org/doc/man/mnesia.html][mnesia]] instead of [[http://www.erlang.org/doc/man/ets.html][ets]].
+See also: [[https://github.com/erlware/Erlang-and-OTP-in-Action-Source/tree/master/chapter_09][Erlang version]]
+
+** [[https://github.com/yurrriq/simple_cache/tree/chapter_10][Chapter 10]]
+Same as [[https://github.com/yurrriq/simple_cache/tree/chapter_09][Chapter 9]], but packaged up into a release.
+See also: [[https://github.com/erlware/Erlang-and-OTP-in-Action-Source/tree/master/chapter_10][Erlang version]]
