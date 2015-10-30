@@ -11,14 +11,14 @@
           (code_change 3)
           (terminate 2)))
 
-(defrecord state '())
+(defrecord state)
 
 
 ;;;===================================================================
 ;;; API
 ;;;===================================================================
 
-(defun add-handler () (sc-event:add-handler (MODULE) '()))
+(defun add-handler    () (sc-event:add-handler (MODULE) '()))
 
 (defun delete-handler () (sc-event:delete-handler (MODULE) '()))
 
@@ -27,8 +27,7 @@
 ;;; gen_event callbacks
 ;;;===================================================================
 
-(defun init
-  (['()] `#(ok ,(make-state))))
+(defun init (['()] `#(ok ,(make-state))))
 
 (defun handle_event
   ([`#(create #(,key ,value)) state]
@@ -44,12 +43,10 @@
    (error_logger:info_msg "(replace ~w ~w)~n" `(,key ,value))
    `#(ok ,state)))
 
-(defun handle_call (_request state)
-  (let ((reply 'ok))
-    `#(ok ,reply ,state)))
+(defun handle_call (_request state)            `#(ok ok ,state))
 
-(defun handle_info (_info state) `#(ok ,state))
+(defun handle_info (_info state)               `#(ok ,state))
 
 (defun code_change (_old-version state _extra) `#(ok ,state))
 
-(defun terminate (_reason _state) 'ok)
+(defun terminate   (_reason _state)            'ok)
